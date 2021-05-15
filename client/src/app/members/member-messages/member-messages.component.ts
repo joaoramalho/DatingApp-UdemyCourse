@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { map, tap } from 'rxjs/operators';
 import { Message } from 'src/app/_models/message';
@@ -8,7 +8,8 @@ import { MessageService } from 'src/app/_services/message.service';
 @Component({
   selector: 'app-member-messages',
   templateUrl: './member-messages.component.html',
-  styleUrls: ['./member-messages.component.css']
+  styleUrls: ['./member-messages.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MemberMessagesComponent implements OnInit, AfterViewInit {
   @ViewChild('messageForm') messageForm: NgForm;
