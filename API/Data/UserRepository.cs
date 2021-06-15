@@ -32,6 +32,14 @@ namespace API.Data
             return await _scontext.Users.FindAsync(id);
         }
 
+        public async Task<AppUser> GetUserByPhotoId(int id)
+        {
+            return await _scontext.Photos
+                        .Where(x => x.Id == id)
+                        .Select(t => t.AppUser)
+                        .FirstOrDefaultAsync();
+        }
+
         public async Task<AppUser> GetUserByUsernameAsync(string username)
         {
             return await _scontext.Users
@@ -56,6 +64,8 @@ namespace API.Data
 
             query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
+            query = query.Include(p => p.Photos).Where(x => x.Photos.Any(p => p.IsApproved));
+
             query = userParams.OrderBy switch
             {
                 "created" => query.OrderByDescending(u => u.Created),
@@ -68,12 +78,18 @@ namespace API.Data
                 userParams.PageSize);
         }
 
-        public async Task<MemberDTO> GetMemberAsync(string username)
+        public async Task<MemberDTO> GetMemberAsync(string username, bool? isCurrentUser)
         {
-            return await _scontext.Users
+            var query = _scontext.Users
                 .Where(x => x.UserName == username)
                 .ProjectTo<MemberDTO>(_smapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+                .AsQueryable();
+
+                if((bool)isCurrentUser){
+                    query = query.IgnoreQueryFilters();
+                }
+
+                return await query.FirstOrDefaultAsync();
         }
 
         public async Task<string> GetUserGender(string username)

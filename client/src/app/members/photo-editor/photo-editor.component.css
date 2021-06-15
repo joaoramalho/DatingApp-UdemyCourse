@@ -4,10 +4,19 @@ img.img-thumbnail {
     margin-bottom: 2px;
 }
 
+img.img-thumbnail-for-approval {
+    opacity: 0.2;
+}
+
 .nv-file-over {
     border: dotted 3px red;
 }
 
 input[type=file]{
     color: transparent;
+}
+
+.photo-approval {
+    color: red;
+    position: absolute;
 }
